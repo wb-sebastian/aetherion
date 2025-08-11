@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aetherion ID Verification</title>
+  <style>
+    :root {
+      --main-bg: #0b3d0b; /* Forest green */
+      --text-color: #ffffff;
+      --neon-lightblue: #7fffd4;
+      --neon-pink: #ffb6c1;
+    }
+
+    body {
+      background-color: var(--main-bg);
+      color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Neon border animation */
+    @keyframes neon-border {
+      0% {
+        border-color: var(--neon-lightblue);
+        box-shadow: 0 0 10px var(--neon-lightblue);
+      }
+      50% {
+        border-color: var(--neon-pink);
+        box-shadow: 0 0 20px var(--neon-pink);
+      }
+      100% {
+        border-color: var(--neon-lightblue);
+        box-shadow: 0 0 10px var(--neon-lightblue);
+      }
+    }
+
+    .container {
+      position: relative;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 255, 255, 0.25), 0 10px 40px rgba(255, 105, 180, 0.25);
+      width: 90%;
+      max-width: 500px;
+      backdrop-filter: blur(6px);
+      animation: neon-border 3s ease-in-out infinite;
+    }
+
+    .intro-animation, .done-animation {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .intro-animation img, .done-animation img {
+      width: 120px;
+      height: auto;
+      display: block;
+      margin: 0 auto 8px;
+      filter: drop-shadow(0 0 12px var(--neon-lightblue)) drop-shadow(0 0 20px var(--neon-pink));
+      animation: popIn 1s ease-out forwards;
+    }
+
+    .intro-text, .done-text {
+      font-size: 24px;
+      font-weight: bold;
+      animation: neonPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes neonPulse {
+      0%,100% { color: var(--neon-lightblue); text-shadow: 0 0 8px var(--neon-lightblue), 0 0 20px var(--neon-pink); }
+      50% { color: var(--neon-pink); text-shadow: 0 0 16px var(--neon-pink), 0 0 32px var(--neon-lightblue); }
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    #videoContainer {
+      position: relative;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1.586; /* credit card horizontal ID default */
+      border-radius: 12px;
+      overflow: hidden;
+      background: #111;
+      transition: transform .3s ease;
+    }
+
+    #video, #capturedImage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    /* Selfie oval styling (vertical oval) */
+    #video.selfie, #capturedImage.selfie {
+      border-radius: 35% / 50%; /* taller vertical oval */
+    }
+
+    .id-frame {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      width: 90%;
+      height: 90%;
+      border: 2px dashed rgba(255,255,255,0.8);
+      box-sizing: border-box;
+      border-radius: 8px;
+      pointer-events: none;
+      transition: border-radius .3s ease;
+    }
+
+    .id-frame.selfie {
+      border-radius: 35% / 50%; /* match oval selfie preview */
+    }
+
+    button {
+      background-color: transparent;
+      border: 2px solid var(--neon-lightblue);
+      color: white;
+      padding: 12px 28px;
+      text-align: center;
+      font-size: 16px;
+      margin: 10px 5px;
+      cursor: pointer;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: all .3s ease;
+    }
+
+    button:before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(60deg, rgba(255,255,255,0.1), rgba(255,255,255,0) );
+      mix-blend-mode: overlay;
+      pointer-events: none;
+    }
+
+    button:hover {
+      box-shadow: 0 0 18px var(--neon-lightblue), 0 0 30px var(--neon-pink);
+      border-color: var(--neon-pink);
+    }
+
+    #idInstructions p,
+    #selfieInstructions p {
+      margin: 8px 0 12px;
+    }
+
+    #thankYouMessage p {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="intro-animation" id="introBlock">
+      <img src="https://i.ibb.co/Cpf9cKSW/Aetherionlg.png" alt="Aetherion Logo" />
+      <div class="intro-text">Powered by Aetherion</div>
+    </div>
+
+    <div id="idInstructions">
+      <p>Place your ID on a flat, blank surface with good lighting. Avoid glare.</p>
+    </div>
+
+    <div id="videoContainer">
+      <video id="video" autoplay playsinline></video>
+      <div class="id-frame" aria-hidden="true"></div>
+      <img id="capturedImage" style="display:none;" />
+      <canvas id="canvas"></canvas>
+      <canvas id="faceCanvas"></canvas>
+    </div>
+
+    <div class="button-container">
+      <button id="captureButton">Capture ID</button>
+      <button id="retakeButton" style="display:none;">Retake</button>
+      <button id="sendButton" style="display:none;">Send and Proceed</button>
+    </div>
+
+    <div id="selfieInstructions" style="display:none;">
+      <p>Now take a well-lit selfie with your face clearly visible. Center your face.</p>
+    </div>
+
+    <div id="thankYouMessage" style="display:none;">
+      <div class="done-animation">
+        <img src="https://i.ibb.co/Cpf9cKSW/Aetherionlg.png" alt="Aetherion Logo" />
+        <div class="done-text">Thank you for using Aetherion, you may return to the verification channel now.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let idImageData = null;
+    let selfieImageData = null;
+    let stream = null;
+    let currentStep = "id"; // "id" or "selfie"
+
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    const userId = getQueryParam("user_id");
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const faceCanvas = document.getElementById('faceCanvas');
+    const capturedImage = document.getElementById('capturedImage');
+    const captureButton = document.getElementById('captureButton');
+    const retakeButton = document.getElementById('retakeButton');
+    const sendButton = document.getElementById('sendButton');
+    const idInstructions = document.getElementById('idInstructions');
+    const selfieInstructions = document.getElementById('selfieInstructions');
+    const thankYouMessage = document.getElementById('thankYouMessage');
+    const videoContainer = document.getElementById('videoContainer');
+    const introBlock = document.getElementById('introBlock');
+    const frameEl = document.querySelector('.id-frame');
+
+    async function startCamera(facing = "environment") {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facing }
+      });
+      video.srcObject = stream;
+      await video.play();
+    }
+
+    function showStepInstructions() {
+      if (currentStep === "id") {
+        idInstructions.style.display = "block";
+        selfieInstructions.style.display = "none";
+        captureButton.innerText = "Capture ID";
+        video.classList.remove("selfie");
+        capturedImage.classList.remove("selfie");
+        // hide any previous selfie or ID image
+        capturedImage.style.display = "none";
+        capturedImage.src = "";
+        videoContainer.style.aspectRatio = "1.586"; // credit card horizontal for ID
+        videoContainer.style.background = "#111";
+        frameEl.classList.remove('selfie');
+      } else {
+        idInstructions.style.display = "none";
+        selfieInstructions.style.display = "block";
+        captureButton.innerText = "Capture Selfie";
+        video.classList.add("selfie");
+        capturedImage.classList.add("selfie");
+        // remove previous ID image if showing
+        capturedImage.style.display = "none";
+        capturedImage.src = "";
+        videoContainer.style.aspectRatio = "3 / 4"; // taller for face
+        videoContainer.style.background = "transparent"; // remove black square behind oval
+        frameEl.classList.add('selfie');
+      }
+    }
+
+    function cropToIDFrame() {
+      // capture full video frame
+      const tmp = document.createElement('canvas');
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
+      tmp.width = vw;
+      tmp.height = vh;
+      const tctx = tmp.getContext('2d');
+      tctx.drawImage(video, 0, 0, vw, vh);
+
+      // determine cropping area to match preview: aspect ratio 1.586 with 90% inset
+      const targetRatio = 1.586;
+      const maxW = tmp.width * 0.9;
+      const maxH = tmp.height * 0.9;
+      let cropW = maxW;
+      let cropH = cropW / targetRatio;
+      if (cropH > maxH) {
+        cropH = maxH;
+        cropW = cropH * targetRatio;
+      }
+      const offsetX = (tmp.width - cropW) / 2;
+      const offsetY = (tmp.height - cropH) / 2;
+
+      canvas.width = cropW;
+      canvas.height = cropH;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, cropW, cropH);
+      ctx.drawImage(tmp, offsetX, offsetY, cropW, cropH, 0, 0, cropW, cropH);
+      return canvas;
+    }
+
+    async function captureSelfieWithFaceDetection() {
+      const tmp = document.createElement('canvas');
+      tmp.width = video.videoWidth;
+      tmp.height = video.videoHeight;
+      const tctx = tmp.getContext('2d');
+      tctx.drawImage(video, 0, 0, tmp.width, tmp.height);
+
+      let faceBox = null;
+      if ('FaceDetector' in window) {
+        try {
+          const detector = new FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
+          const faces = await detector.detect(tmp);
+          if (faces && faces.length > 0) {
+            faceBox = faces[0].boundingBox;
+          }
+        } catch (e) {
+          console.warn('FaceDetector failed, falling back to center crop', e);
+        }
+      }
+
+      let sx, sy, sw, sh;
+      if (faceBox) {
+        const padding = 0.3;
+        const x = faceBox.x;
+        const y = faceBox.y;
+        const w = faceBox.width;
+        const h = faceBox.height;
+        const expandW = w * padding;
+        const expandH = h * padding;
+        sx = Math.max(0, x - expandW);
+        sy = Math.max(0, y - expandH);
+        sw = Math.min(tmp.width - sx, w + expandW * 2);
+        sh = Math.min(tmp.height - sy, h + expandH * 2);
+      } else {
+        const size = Math.min(tmp.width, tmp.height) * 0.8;
+        sx = (tmp.width - size) / 2;
+        sy = (tmp.height - size) / 2;
+        sw = size;
+        sh = size;
+      }
+
+      faceCanvas.width = sw;
+      faceCanvas.height = sh;
+      const fctx = faceCanvas.getContext('2d');
+      fctx.clearRect(0, 0, sw, sh);
+      fctx.save();
+      fctx.beginPath();
+      fctx.ellipse(sw / 2, sh / 2, sw * 0.45, sh * 0.55, 0, 0, Math.PI * 2);
+      fctx.closePath();
+      fctx.clip();
+      fctx.drawImage(tmp, sx, sy, sw, sh, 0, 0, sw, sh);
+      fctx.restore();
+
+      return faceCanvas;
+    }
+
+    function isImageFromScreen(imageData) {
+      return imageData.includes("screen-detected");
+    }
+
+    captureButton.addEventListener("click", async function () {
+      if (currentStep === "id") {
+        const idCanvas = cropToIDFrame();
+        const dataUrl = idCanvas.toDataURL("image/png");
+
+        if (isImageFromScreen(dataUrl)) {
+          alert("Screen images are not allowed. Please retake the photo.");
+          retakeButton.style.display = "inline-block";
+        } else {
+          capturedImage.src = dataUrl;
+          capturedImage.style.display = "block";
+          capturedImage.classList.remove("selfie");
+          video.style.display = "none";
+          captureButton.style.display = "none";
+          retakeButton.style.display = "inline-block";
+          sendButton.style.display = "inline-block";
+          idImageData = dataUrl;
+        }
+      } else {
+        const faceC = await captureSelfieWithFaceDetection();
+        const dataUrl = faceC.toDataURL("image/png");
+
+        if (isImageFromScreen(dataUrl)) {
+          alert("Screen images are not allowed. Please retake the photo.");
+          retakeButton.style.display = "inline-block";
+        } else {
+          capturedImage.src = dataUrl;
+          capturedImage.style.display = "block";
+          capturedImage.classList.add("selfie");
+          video.style.display = "none";
+          captureButton.style.display = "none";
+          retakeButton.style.display = "inline-block";
+          sendButton.style.display = "inline-block";
+          selfieImageData = dataUrl;
+        }
+      }
+    });
+
+    retakeButton.addEventListener("click", async function () {
+      capturedImage.style.display = "none";
+      video.style.display = "block";
+      captureButton.style.display = "inline-block";
+      retakeButton.style.display = "none";
+      sendButton.style.display = "none";
+
+      if (currentStep === "selfie") {
+        await startCamera("user");
+      } else {
+        await startCamera("environment");
+      }
+    });
+
+    sendButton.addEventListener("click", async function () {
+      if (currentStep === "id") {
+        currentStep = "selfie";
+        showStepInstructions();
+        capturedImage.style.display = "none";
+        video.style.display = "block";
+        retakeButton.style.display = "none";
+        sendButton.style.display = "none";
+        captureButton.style.display = "inline-block";
+        await startCamera("user");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('id-image', dataURItoBlob(idImageData), `user_${userId}_ID.png`);
+      formData.append('selfie-image', dataURItoBlob(selfieImageData), `user_${userId}_Selfie.png`);
+
+      try {
+        const response = await fetch(`{{ ngrok_url }}/submit-images?user_id=${userId}`, {
+          method: "POST",
+          body: formData
+        });
+
+        if (response.ok) {
+          document.querySelector('.button-container').style.display = 'none';
+          document.getElementById('videoContainer').style.display = 'none';
+          selfieInstructions.style.display = 'none';
+          thankYouMessage.style.display = 'block';
+        } else {
+          alert("Failed to send images. Try again later.");
+        }
+      } catch (err) {
+        alert("An error occurred during submission.");
+        console.error(err);
+      }
+    });
+
+    function dataURItoBlob(dataURI) {
+      const byteString = atob(dataURI.split(',')[1]);
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+      for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+      }
+      return new Blob([uint8Array], { type: 'image/png' });
+    }
+
+    // Init camera and step on page load
+    startCamera("environment").then(() => {
+      showStepInstructions();
+      setTimeout(() => {
+        introBlock.style.transition = "opacity .8s ease";
+        introBlock.style.opacity = "0";
+        setTimeout(() => introBlock.classList.add("hidden"), 800);
+      }, 1600);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+Flask
+flask-cors
+dotenv
+discord.py
+easyocr
+face_recognition
+requests
+PyNaCl
+PyYAML
+asyncio
+opencv-python
+python-dotenv

@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aetherion</title>
+  <style>
+    :root {
+      --main-bg: #191b1c; /* Dark background */
+      --accent-color: #5f773b; /* Green accent */
+      --text-color: #ffffff;
+      --neon-lightblue: #7fffd4;
+      --neon-pink: #ffb6c1;
+    }
+
+    body {
+      background-color: var(--main-bg);
+      color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar-brand {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--neon-lightblue);
+      text-decoration: none;
+      text-shadow: 0 0 8px var(--neon-lightblue);
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-logo {
+      height: 40px; /* Adjust as needed */
+      margin-right: 10px;
+      filter: drop-shadow(0 0 5px var(--neon-lightblue));
+    }
+
+    .nav-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    .nav-links li {
+      margin-left: 30px;
+    }
+
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 18px;
+      padding: 5px 0;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--neon-pink);
+      text-shadow: 0 0 5px var(--neon-pink);
+    }
+
+    .nav-links a.active:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 100%;
+      height: 2px;
+      background-color: var(--neon-pink);
+      box-shadow: 0 0 8px var(--neon-pink);
+    }
+
+    .login-button {
+      background-color: var(--accent-color);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-button:hover {
+      background-color: #5a7a3a; /* Darker shade of accent */
+    }
+
+    /* Main Content Sections */
+    .content-section {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 20px;
+      text-align: center;
+      min-height: calc(100vh - 80px); /* Adjust based on navbar height */
+    }
+
+    .content-section h1 {
+      font-size: 48px;
+      color: var(--neon-lightblue);
+      text-shadow: 0 0 10px var(--neon-lightblue), 0 0 20px var(--neon-pink);
+      margin-bottom: 20px;
+    }
+
+    .content-section p {
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .policy-container {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 20px auto;
+      max-width: 900px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), 0 0 20px rgba(255, 105, 180, 0.2);
+      text-align: left;
+    }
+
+    .policy-container h1 {
+      font-size: 40px; /* Larger than subtitles */
+      color: var(--neon-lightblue);
+      text-shadow: 0 0 10px var(--neon-lightblue);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .policy-container h2 {
+      font-size: 24px; /* Subtitles larger than text */
+      color: var(--neon-pink);
+      text-shadow: 0 0 8px var(--neon-pink);
+      margin-top: 25px;
+      margin-bottom: 10px;
+    }
+
+    .policy-container p, .policy-container pre {
+      font-size: 18px; /* Bigger text */
+      line-height: 1.8;
+      color: var(--text-color);
+      white-space: pre-wrap; /* Preserve formatting for pre */
+      word-wrap: break-word;
+    }
+
+    /* Dashboard Styles */
+    .dashboard-container {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 20px auto;
+      max-width: 900px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), 0 0 20px rgba(255, 105, 180, 0.2);
+      text-align: center;
+      width: 100%;
+    }
+
+    .dashboard-container h1 {
+      font-size: 40px;
+      color: var(--neon-lightblue);
+      text-shadow: 0 0 10px var(--neon-lightblue);
+      margin-bottom: 20px;
+    }
+
+    .dashboard-container p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .guild-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .guild-card {
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+      padding: 20px;
+      width: 200px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+    }
+
+    .guild-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    }
+
+    .guild-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      object-fit: cover;
+    }
+
+    .guild-card h3 {
+      font-size: 20px;
+      color: var(--neon-pink);
+      margin-bottom: 5px;
+    }
+
+    .guild-card p {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    /* Guild Settings Styles */
+    .guild-settings-container {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 20px auto;
+      max-width: 900px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), 0 0 20px rgba(255, 105, 180, 0.2);
+      text-align: left;
+      width: 100%;
+    }
+
+    .guild-settings-container h1 {
+      font-size: 36px;
+      color: var(--neon-lightblue);
+      text-shadow: 0 0 10px var(--neon-lightblue);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .guild-settings-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .guild-settings-container label {
+      font-size: 18px;
+      color: var(--text-color);
+      margin-bottom: 5px;
+    }
+
+    .guild-settings-container select,
+    .guild-settings-container input[type="number"],
+    .guild-settings-container input[type="text"] {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid var(--neon-lightblue);
+      background-color: rgba(0, 0, 0, 0.4);
+      color: var(--text-color);
+      font-size: 16px;
+    }
+
+    .guild-settings-container select option {
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+
+    .guild-settings-container button[type="submit"],
+    .guild-settings-container button[type="button"] {
+      background-color: var(--neon-pink);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .guild-settings-container button[type="submit"]:hover,
+    .guild-settings-container button[type="button"]:hover {
+      background-color: var(--neon-lightblue);
+    }
+
+    .age-role-entry {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .age-role-entry input[type="number"] {
+      width: 80px;
+    }
+
+    .age-role-entry button {
+      background-color: #dc3545;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .age-role-entry button:hover {
+      background-color: #c82333;
+    }
+
+    /* Admin Panel Styles */
+    .admin-container {
+      display: flex;
+      width: 90%;
+      max-width: 1200px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), 0 0 20px rgba(255, 105, 180, 0.2);
+      overflow: hidden;
+      min-height: 600px;
+    }
+
+    .side-nav {
+      width: 250px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-right: 1px solid var(--accent-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .side-nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      padding: 15px 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-size: 18px;
+    }
+
+    .side-nav a:hover,
+    .side-nav a.active {
+      background-color: var(--accent-color);
+      color: white;
+      box-shadow: 0 0 10px var(--accent-color);
+    }
+
+    .admin-content {
+      flex-grow: 1;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-sub-section {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .admin-sub-section h1 {
+      font-size: 36px;
+      color: var(--neon-lightblue);
+      text-shadow: 0 0 8px var(--neon-lightblue);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* Embed Builder Styles */
+    .embed-builder {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .embed-builder input[type="text"],
+    .embed-builder textarea {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--accent-color);
+      border-radius: 5px;
+      padding: 10px;
+      color: var(--text-color);
+      font-size: 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .embed-builder textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .embed-builder input[type="color"] {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 50px;
+      height: 30px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: none;
+    }
+
+    .embed-builder input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .embed-builder input[type="color"]::-webkit-color-swatch {
+      border: 1px solid var(--accent-color);
+      border-radius: 5px;
+    }
+
+    .embed-builder button {
+      background-color: var(--accent-color);
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+    }
+
+    .embed-builder button:hover {
+      background-color: #5a7a3a;
+    }
+
+    /* Registered Servers Styles */
+    .server-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .server-card {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--accent-color);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.1), 0 0 10px rgba(255, 105, 180, 0.1);
+    }
+
+    .server-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--neon-lightblue);
+    }
+
+    .server-info {
+      flex-grow: 1;
+    }
+
+    .server-info h3 {
+      margin: 0 0 5px 0;
+      color: var(--neon-pink);
+      font-size: 20px;
+    }
+
+    .server-info p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-color);
+    }
+
+    .server-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .server-actions button {
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .server-actions .leave-button {
+      background-color: #dc3545; /* Red for leave */
+      border: 1px solid #dc3545;
+      color: white;
+    }
+
+    .server-actions .leave-button:hover {
+      background-color: #c82333;
+    }
+
+    .server-actions .gift-button {
+      background-color: #007bff; /* Blue for gift */
+      border: 1px solid #007bff;
+      color: white;
+    }
+
+    .server-actions .gift-button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Neon border animation for containers */
+    @keyframes neon-border {
+      0% {
+        border-color: var(--neon-lightblue);
+        box-shadow: 0 0 10px var(--neon-lightblue);
+      }
+      50% {
+        border-color: var(--neon-pink);
+        box-shadow: 0 0 20px var(--neon-pink);
+      }
+      100% {
+        border-color: var(--neon-lightblue);
+        box-shadow: 0 0 10px var(--neon-lightblue);
+      }
+    }
+
+    .container {
+      position: relative;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 255, 255, 0.25), 0 10px 40px rgba(255, 105, 180, 0.25);
+      width: 90%;
+      max-width: 500px;
+      backdrop-filter: blur(6px);
+      animation: neon-border 3s ease-in-out infinite;
+    }
+
+    .intro-animation, .done-animation {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .intro-animation img, .done-animation img {
+      width: 120px;
+      height: auto;
+      display: block;
+      margin: 0 auto 8px;
+      filter: drop-shadow(0 0 12px var(--neon-lightblue)) drop-shadow(0 0 20px var(--neon-pink));
+      animation: popIn 1s ease-out forwards;
+    }
+
+    .intro-text, .done-text {
+      font-size: 24px;
+      font-weight: bold;
+      animation: neonPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes neonPulse {
+      0%,100% { color: var(--neon-lightblue); text-shadow: 0 0 8px var(--neon-lightblue), 0 0 20px var(--neon-pink); }
+      50% { color: var(--neon-pink); text-shadow: 0 0 16px var(--neon-pink), 0 0 32px var(--neon-lightblue); }
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    #videoContainer {
+      position: relative;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1.586; /* credit card horizontal ID default */
+      border-radius: 12px;
+      overflow: hidden;
+      background: #111;
+      transition: transform .3s ease;
+    }
+
+    #video, #capturedImage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    /* Selfie oval styling (vertical oval) */
+    #video.selfie, #capturedImage.selfie {
+      border-radius: 35% / 50%; /* taller vertical oval */
+    }
+
+    .id-frame {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      width: 90%;
+      height: 90%;
+      border: 2px dashed rgba(255,255,255,0.8);
+      box-sizing: border-box;
+      border-radius: 8px;
+      pointer-events: none;
+      transition: border-radius .3s ease;
+    }
+
+    .id-frame.selfie {
+      border-radius: 35% / 50%; /* match oval selfie preview */
+    }
+
+    button {
+      background-color: transparent;
+      border: 2px solid var(--neon-lightblue);
+      color: white;
+      padding: 12px 28px;
+      text-align: center;
+      font-size: 16px;
+      margin: 10px 5px;
+      cursor: pointer;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: all .3s ease;
+    }
+
+    button:before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(60deg, rgba(255,255,255,0.1), rgba(255,255,255,0) );
+      mix-blend-mode: overlay;
+      pointer-events: none;
+    }
+
+    button:hover {
+      box-shadow: 0 0 18px var(--neon-lightblue), 0 0 30px var(--neon-pink);
+      border-color: var(--neon-pink);
+    }
+
+    #idInstructions p,
+    #selfieInstructions p {
+      margin: 8px 0 12px;
+    }
+
+    #thankYouMessage p {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="#home" class="navbar-brand"><img src="https://i.ibb.co/Pvy8D4f/Aetherionlg.png" alt="Aetherion Logo" class="navbar-logo">Aetherion</a>
+    <ul class="nav-links">
+      <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
+      <li><a href="#verification" class="nav-link" data-section="verification">Verification</a></li>
+      <li><a href="#dashboard" class="nav-link" data-section="dashboard">Dashboard</a></li>
+
+      <li><a href="#terms" class="nav-link" data-section="terms">Terms of Service</a></li>
+      <li><a href="#privacy" class="nav-link" data-section="privacy">Privacy Policy</a></li>
+    </ul>
+    <button class="login-button" onclick="window.open('/login', '_blank')">Login with Discord</button>
+  </nav>
+
+  <main>
+    <section id="home" class="content-section">
+      <div>
+        <h1>Welcome to Aetherion</h1>
+        <p>Your ultimate solution for secure and efficient identity verification. Explore our features and get started with a seamless experience.</p>
+      </div>
+    </section>
+
+    <section id="dashboard" class="content-section hidden">
+      <div class="dashboard-container">
+        <h1>Dashboard</h1>
+        <p>Select a server to manage its settings.</p>
+        <div id="managed-guilds-list" class="guild-list"></div>
+      </div>
+    </section>
+
+    <section id="guild-settings" class="content-section hidden">
+      <div class="guild-settings-container">
+        <h1>Guild Settings for <span id="guild-name"></span></h1>
+        <form id="guild-settings-form">
+          <input type="hidden" id="settings-guild-id" name="guild_id">
+
+          <label for="log-channel">Log Channel:</label>
+          <select id="log-channel" name="log_channel_id"></select>
+
+          <label for="info-channel">Info Channel:</label>
+          <select id="info-channel" name="info_channel_id"></select>
+
+          <div id="age-roles-container">
+            <h2>Age Roles</h2>
+            <button type="button" id="add-age-role">Add Age Role</button>
+          </div>
+
+          <label for="verified-role">Verified Role:</label>
+          <select id="verified-role" name="verified_role_id"></select>
+
+          <label for="min-age-verified">Minimum Age for Verified Role:</label>
+          <input type="number" id="min-age-verified" name="min_age_for_verified_role" min="0">
+
+          <button type="submit">Save Settings</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="verification" class="content-section hidden">
+      <div class="container">
+        <div class="intro-animation" id="introBlock">
+          <img src="https://i.ibb.co/Cpf9cKSW/Aetherionlg.png" alt="Aetherion Logo" />
+          <div class="intro-text">Powered by Aetherion</div>
+        </div>
+
+        <div id="idInstructions">
+          <p>Place your ID on a flat, blank surface with good lighting. Avoid glare.</p>
+        </div>
+
+        <div id="videoContainer">
+          <video id="video" autoplay playsinline></video>
+          <div class="id-frame" aria-hidden="true"></div>
+          <img id="capturedImage" style="display:none;" />
+          <canvas id="canvas"></canvas>
+          <canvas id="faceCanvas"></canvas>
+        </div>
+
+        <div class="button-container">
+          <button id="captureButton">Capture ID</button>
+          <button id="retakeButton" style="display:none;">Retake</button>
+          <button id="sendButton" style="display:none;">Send and Proceed</button>
+        </div>
+
+        <div id="selfieInstructions" style="display:none;">
+          <p>Now take a well-lit selfie with your face clearly visible. Center your face.</p>
+        </div>
+
+        <!-- Additional verification content from original index.html -->
+        <div id="selfieVideoContainer" style="display:none;">
+          <video id="selfieVideo" autoplay playsinline></video>
+          <div class="id-frame selfie" aria-hidden="true"></div>
+          <img id="capturedSelfie" style="display:none;" />
+          <canvas id="selfieCanvas"></canvas>
+        </div>
+
+        <div class="button-container" id="selfieButtons" style="display:none;">
+          <button id="captureSelfieButton">Capture Selfie</button>
+          <button id="retakeSelfieButton" style="display:none;">Retake Selfie</button>
+          <button id="sendSelfieButton" style="display:none;">Send Selfie</button>
+        </div>
+
+        <div id="thankYouMessage" style="display:none;">
+          <div class="done-animation">
+            <img src="https://i.ibb.co/Cpf9cKSW/Aetherionlg.png" alt="Aetherion Logo" />
+            <div class="done-text">Thank You!</div>
+          </div>
+          <p>Your images have been submitted for verification. You will be notified once the process is complete.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="dashboard" class="content-section hidden">
+      <div>
+        <h1>Dashboard</h1>
+        <p>This is your personalized dashboard. Log in with Discord to access your account details and verification status.</p>
+        <button class="login-button">Login with Discord</button>
+      </div>
+    </section>
+
+    <section id="terms" class="content-section hidden">
+      <div>
+        <div class="policy-container">
+            <h1>Terms of Service</h1>
+            <pre>
+Last Updated: 2025.08.11
+
+<h2>1. Introduction</h2>
+Welcome to Aetherion (“we”, “our”, “the bot”). By using Aetherion’s verification system, you agree to these Terms of Service. If you do not agree, you may not proceed with verification.
+
+Aetherion is designed to help Discord server owners verify user age and identity. We take privacy seriously and aim to process personal data securely and transparently.
+
+<h2>2. Purpose of Data Collection</h2>
+Aetherion collects:
+
+Identification document image (ID, passport, driver’s license)
+
+Selfie provided by the user
+
+We process these to:
+
+Verify your age using OCR (Optical Character Recognition)
+
+Compare your ID photo with your selfie using facial recognition technology
+
+Assist server moderators in detecting fake IDs
+
+<h2>3. Data Storage & Access</h2>
+Your data is stored locally on a secure, access-restricted computer.
+
+Only the bot owner has direct access to the stored data.
+
+For moderation purposes, submitted IDs are also sent to the server’s dedicated Aetherion logs channel so server staff can perform additional checks.
+
+Data is stored until you request its deletion (this policy may change in the future, and you will be notified in advance).
+
+<h2>4. Your Rights</h2>
+Under applicable privacy laws (including GDPR), you have the right to:
+
+Request a copy of your stored data
+
+Request deletion of your data at any time
+
+Withdraw consent to verification before submitting your ID and selfie
+
+Deletion and data requests can be made via [contact method].
+
+<h2>5. Liability</h2>
+Aetherion’s role is limited to verification. We are not responsible for how any Discord server uses or stores your submitted data after it has been sent to their Aetherion logs channel.
+
+If a server misuses your data, that responsibility lies with the server owner(s) and their moderation team, not the Aetherion bot owner.
+
+<h2>6. Prohibited Uses</h2>
+By using Aetherion, you agree not to:
+
+Submit fraudulent or altered identification
+
+Use the bot for illegal purposes
+
+Attempt to bypass verification or access stored data without authorization
+
+<h2>7. Changes to the Terms</h2>
+We may update these Terms of Service at any time. The date above will reflect the latest version. Continued use of Aetherion after changes means you accept the updated terms.
+
+<h2>8. Contact</h2>
+For deletion requests, data access, or questions, contact (on discord): _philosophy_
+            </pre>
+          </div>
+      </div>
+    </section>
+
+    <section id="admin-panel" class="content-section hidden">
+      <div class="admin-container">
+        <div class="side-nav">
+          <a href="#construct-embed" class="admin-nav-link" data-admin-section="construct-embed">Construct Embed</a>
+          <a href="#registered-servers" class="admin-nav-link" data-admin-section="registered-servers">Registered Servers</a>
+        </div>
+        <div class="admin-content">
+          <div id="construct-embed" class="admin-sub-section" style="display: flex;">
+            <h1>Construct Embed</h1>
+            <div class="embed-builder">
+              <input type="text" placeholder="Embed Title">
+              <textarea placeholder="Embed Description"></textarea>
+              <input type="text" placeholder="Image URL">
+              <input type="text" placeholder="Thumbnail URL">
+              <input type="text" placeholder="Footer Text">
+              <input type="color" value="#5f773b"> <!-- Embed Color -->
+              <button class="send-embed-button">Send Embed</button>
+            </div>
+          </div>
+          <div id="registered-servers" class="admin-sub-section" style="display: none;">
+            <h1>Registered Servers</h1>
+            <div class="server-cards-container">
+              <div class="server-card">
+                <img src="https://via.placeholder.com/50" alt="Server Logo" class="server-logo">
+                <div class="server-info">
+                  <h3>Server Name Placeholder</h3>
+                  <p>Members: XXX</p>
+                  <p>Description: This is a placeholder description for a Discord server.</p>
+                </div>
+                <div class="server-actions">
+                  <button class="leave-button">Leave</button>
+                  <button class="gift-button">Gift</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="privacy" class="content-section hidden">
+      <div>
+        <div class="policy-container">
+            <h1>Privacy Policy</h1>
+            <pre>
+Last Updated: 2025.08.11
+
+<h2>1. Introduction</h2>
+This Privacy Policy explains how Aetherion (“we”, “our”, “the bot”) collects, stores, and uses personal data during the verification process.
+
+By using Aetherion’s verification system, you acknowledge that you have read and understood this Privacy Policy.
+
+We are committed to protecting your privacy and ensuring your personal data is handled securely and transparently.
+
+<h2>2. Data We Collect</h2>
+When you use Aetherion for verification, we may collect:
+
+Government-issued ID image (passport, ID card, driver’s license, etc.)
+
+Selfie photograph
+
+This data may contain:
+
+Your full name
+
+Date of birth
+
+Photo
+
+ID number
+
+Issuing authority
+
+Signature
+
+Other identifying details present on the document
+
+<h2>3. Purpose of Processing</h2>
+Your personal data is used solely for:
+
+Age verification via OCR (Optical Character Recognition).
+
+Identity matching — comparing your ID photo to your selfie using facial recognition.
+
+Moderation assistance — sharing your submitted ID with a server’s Aetherion logs channel to help moderators detect fake IDs.
+
+We do not use your data for marketing, profiling, or any other unrelated purposes.
+
+<h2>4. Data Storage & Security</h2>
+All collected data is stored locally on a password-protected computer in a locked folder.
+
+Access to stored data is restricted only to the bot owner.
+
+IDs are also sent to the server’s designated Aetherion logs channel for moderation review.
+
+Your data will be stored until you request deletion, after which it will be removed from both local storage and (to the extent possible) from server logs.
+
+<h2>5. Legal Basis for Processing</h2>
+Under GDPR, our legal basis for processing personal data is Consent (Article 6(1)(a)).
+You must explicitly agree to these terms before submitting your ID and selfie.
+
+<h2>6. Your Rights</h2>
+Under GDPR, you have the right to:
+
+Access your stored personal data.
+
+Request deletion of your personal data.
+
+Withdraw consent at any time (before verification is completed).
+
+Complain to your local Data Protection Authority if you believe your data is being misused.
+
+<h2>7. Data Sharing & Liability</h2>
+We do not sell or share your data with third parties.
+
+We are not responsible for how any Discord server stores or uses your ID after it appears in their logs channel. That responsibility lies with the server owner and their staff.
+
+<h2>8. Data Retention</h2>
+We retain your data until you request deletion. This policy may change in the future to include automatic deletion after a set period.
+
+<h2>9. Changes to This Privacy Policy</h2>
+We may update this Privacy Policy from time to time. Updates will be posted with a revised “Last Updated” date.
+
+<h2>10. Contact</h2>
+For deletion requests, data access, or questions, contact (discord):
+_philosophy_
+            </pre>
+          </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.content-section');
+        const homeLink = document.querySelector('.nav-link[data-section="home"]');
+        const dashboardLink = document.querySelector('.nav-link[data-section="dashboard"]');
+        const navBar = document.querySelector('.navbar ul'); // Get the navigation bar ul element
+
+
+        function showSection(sectionId) {
+          sections.forEach(section => {
+            section.classList.add('hidden');
+          });
+          document.getElementById(sectionId).classList.remove('hidden');
+
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.section === sectionId) {
+              link.classList.add('active');
+            }
+          });
+        }
+
+        // Device detection and section visibility
+        function applyDeviceRestrictions() {
+          const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+          const adminPanelNavItem = document.getElementById('admin-panel-nav-item');
+
+          if (isMobile) {
+            // Hide Home and Dashboard links for mobile
+            if (homeLink) homeLink.style.display = 'none';
+            if (dashboardLink) dashboardLink.style.display = 'none';
+            if (adminPanelNavItem) adminPanelNavItem.style.display = 'none'; // Hide admin panel for mobile
+
+            // Ensure only allowed sections are visible
+            const allowedSections = ['verification', 'terms', 'privacy'];
+            sections.forEach(section => {
+              if (!allowedSections.includes(section.id)) {
+                section.classList.add('hidden');
+              }
+            });
+
+            // Redirect to verification if on mobile and trying to access restricted page
+            const hash = window.location.hash.substring(1);
+            if (!hash || !allowedSections.includes(hash)) {
+              showSection('verification');
+              history.replaceState(null, '', '#verification'); // Move this line here
+            }
+          } else {
+            // Show all links for PC
+            if (homeLink) homeLink.style.display = '';
+            if (dashboardLink) dashboardLink.style.display = '';
+            if (adminPanelNavItem) adminPanelNavItem.style.display = ''; // Ensure admin panel is shown for PC
+
+            // Handle initial load for PC
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById(hash)) {
+              showSection(hash);
+            } else {
+              showSection('home');
+            }
+          }
+        }
+
+
+        // Conditional display of Admin Panel for specific user ID
+        const adminUserId = '1179896254487089293'; // The specific user ID for admin access
+        // This function would ideally fetch the logged-in user's ID from a secure backend
+        function getDiscordUserId() {
+          // For demonstration, return a placeholder. In a real app, this would be dynamic.
+          // return '1179896254487089293'; // Uncomment to simulate admin user
+          return null; // Simulate no user logged in or non-admin user
+        }
+
+        const loggedInUserId = getDiscordUserId();
+
+        if (loggedInUserId === adminUserId) {
+          // Create and append the Admin Panel navigation item dynamically
+          const adminPanelLi = document.createElement('li');
+          const adminPanelLink = document.createElement('a');
+          adminPanelLink.href = '#admin-panel';
+          adminPanelLink.classList.add('nav-link');
+          adminPanelLink.dataset.section = 'admin-panel';
+          adminPanelLink.textContent = 'Admin Panel';
+          adminPanelLi.appendChild(adminPanelLink);
+          navBar.appendChild(adminPanelLi);
+
+          // Ensure the admin panel section is visible if the user is admin
+          document.getElementById('admin-panel').classList.remove('hidden');
+        } else {
+          // Ensure the admin panel section is hidden if the user is not admin
+          document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        // Admin panel sub-navigation logic
+        const adminNavLinks = document.querySelectorAll('.admin-nav-link');
+        const adminSubSections = document.querySelectorAll('.admin-sub-section');
+
+        function showAdminSubSection(subSectionId) {
+          adminSubSections.forEach(subSection => {
+            subSection.style.display = 'none';
+          });
+          document.getElementById(subSectionId).style.display = 'flex';
+
+          adminNavLinks.forEach(link => {
+            link.classList.remove('active');
+          });
+          const activeAdminNavLink = document.querySelector(`.admin-nav-link[data-admin-section="${subSectionId}"]`);
+          if (activeAdminNavLink) {
+            activeAdminNavLink.classList.add('active');
+          }
+        }
+
+        adminNavLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const adminSectionId = this.getAttribute('data-admin-section');
+            showAdminSubSection(adminSectionId);
+          });
+        });
+
+        // Modify initial section display to handle admin panel sub-sections
+        const initialHash = window.location.hash.substring(1);
+        if (initialHash) {
+          if (document.getElementById(initialHash)) {
+            showSection(initialHash);
+            if (initialHash === 'admin-panel') {
+              showAdminSubSection('construct-embed'); // Default to construct-embed when admin panel is accessed
+            }
+          } else {
+            showSection('home');
+          }
+        } else {
+          showSection('home');
+        }
+
+
+
+
+        // Initial check for admin panel visibility on page load
+        const adminPanelSection = document.getElementById('admin-panel');
+        if (getDiscordUserId() !== adminUserId) {
+          adminPanelSection.classList.add('hidden');
+        }
+
+        navLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const sectionId = e.target.dataset.section;
+            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+            const allowedSectionsMobile = ['verification', 'terms', 'privacy'];
+
+            if (isMobile && !allowedSectionsMobile.includes(sectionId)) {
+              alert('This section is only accessible on PC.');
+              return; // Prevent navigation
+            }
+
+            showSection(sectionId);
+            history.pushState(null, '', `#${sectionId}`);
+          });
+        });
+
+        // Handle initial load and hash changes
+        function handleHashChange() {
+          applyDeviceRestrictions(); // Re-apply restrictions on hash change
+        }
+
+        window.addEventListener('hashchange', handleHashChange);
+        applyDeviceRestrictions(); // Initial call on DOMContentLoaded
+        // --- Verification Panel JavaScript (adapted from original) ---
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const faceCanvas = document.getElementById('faceCanvas');
+        const captureButton = document.getElementById('captureButton');
+        const retakeButton = document.getElementById('retakeButton');
+        const sendButton = document.getElementById('sendButton');
+        const capturedImage = document.getElementById('capturedImage');
+        const idInstructions = document.getElementById('idInstructions');
+        const introBlock = document.getElementById('introBlock');
+        const selfieInstructions = document.getElementById('selfieInstructions');
+        const selfieVideo = document.getElementById('selfieVideo');
+        const selfieCanvas = document.getElementById('selfieCanvas');
+        const captureSelfieButton = document.getElementById('captureSelfieButton');
+        const retakeSelfieButton = document.getElementById('retakeSelfieButton');
+        const sendSelfieButton = document.getElementById('sendSelfieButton');
+        const capturedSelfie = document.getElementById('capturedSelfie');
+        const selfieVideoContainer = document.getElementById('selfieVideoContainer');
+        const selfieButtons = document.getElementById('selfieButtons');
+        const thankYouMessage = document.getElementById('thankYouMessage');
+        const videoContainer = document.getElementById('videoContainer');
+        const idFrame = document.querySelector('.id-frame');
+
+        let idImageBase64 = '';
+        let selfieImageBase64 = '';
+        let currentStream;
+
+        // Function to start video stream
+        async function startVideoStream(videoElement, isSelfie = false) {
+          if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+          }
+          try {
+            const constraints = isSelfie ? { video: { facingMode: 'user' } } : { video: true };
+            currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+            videoElement.srcObject = currentStream;
+            videoElement.play();
+            videoElement.classList.toggle('selfie', isSelfie);
+            idFrame.classList.toggle('selfie', isSelfie);
+            videoContainer.classList.toggle('selfie', isSelfie);
+          } catch (err) {
+            console.error("Error accessing camera: ", err);
+            alert("Could not access camera. Please ensure you have granted permissions.");
+          }
+        }
+
+        // Initial start for ID capture when verification section is shown
+        // This will be triggered by the navigation logic
+        document.getElementById('verification').addEventListener('transitionend', () => {
+          if (!document.getElementById('verification').classList.contains('hidden')) {
+            startVideoStream(video);
+          }
+        });
+
+        captureButton.addEventListener('click', () => {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+          idImageBase64 = canvas.toDataURL('image/jpeg');
+
+          capturedImage.src = idImageBase64;
+          capturedImage.style.display = 'block';
+          video.style.display = 'none';
+          idFrame.style.display = 'none';
+
+          captureButton.style.display = 'none';
+          retakeButton.style.display = 'inline-block';
+          sendButton.style.display = 'inline-block';
+
+          if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+          }
+        });
+
+        retakeButton.addEventListener('click', () => {
+          capturedImage.style.display = 'none';
+          video.style.display = 'block';
+          idFrame.style.display = 'block';
+
+          captureButton.style.display = 'inline-block';
+          retakeButton.style.display = 'none';
+          sendButton.style.display = 'none';
+          startVideoStream(video);
+        });
+
+        sendButton.addEventListener('click', async () => {
+          idInstructions.style.display = 'none';
+          videoContainer.style.display = 'none';
+          document.querySelector('.button-container').style.display = 'none';
+
+          selfieInstructions.style.display = 'block';
+          selfieVideoContainer.style.display = 'block';
+          selfieButtons.style.display = 'block';
+          startVideoStream(selfieVideo, true);
+        });
+
+        captureSelfieButton.addEventListener('click', () => {
+          selfieCanvas.width = selfieVideo.videoWidth;
+          selfieCanvas.height = selfieVideo.videoHeight;
+          selfieCanvas.getContext('2d').drawImage(selfieVideo, 0, 0, selfieCanvas.width, selfieCanvas.height);
+          selfieImageBase64 = selfieCanvas.toDataURL('image/jpeg');
+
+          capturedSelfie.src = selfieImageBase64;
+          capturedSelfie.style.display = 'block';
+          selfieVideo.style.display = 'none';
+          document.querySelector('#selfieVideoContainer .id-frame').style.display = 'none';
+
+          captureSelfieButton.style.display = 'none';
+          retakeSelfieButton.style.display = 'inline-block';
+          sendSelfieButton.style.display = 'inline-block';
+
+          if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+          }
+        });
+
+        retakeSelfieButton.addEventListener('click', () => {
+          capturedSelfie.style.display = 'none';
+          selfieVideo.style.display = 'block';
+          document.querySelector('#selfieVideoContainer .id-frame').style.display = 'block';
+
+          captureSelfieButton.style.display = 'inline-block';
+          retakeSelfieButton.style.display = 'none';
+          sendSelfieButton.style.display = 'none';
+          startVideoStream(selfieVideo, true);
+        });
+
+        sendSelfieButton.addEventListener('click', async () => {
+          selfieInstructions.style.display = 'none';
+          selfieVideoContainer.style.display = 'none';
+          selfieButtons.style.display = 'none';
+          thankYouMessage.style.display = 'block';
+
+          // Here you would send both idImageBase64 and selfieImageBase64 to your Flask backend
+          // Example fetch request (replace with your actual endpoint and data structure)
+          const urlParams = new URLSearchParams(window.location.search);
+          const userId = urlParams.get('user_id');
+
+          try {
+            const response = await fetch('/submit-images', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                user_id: userId,
+                id_image: idImageBase64,
+                selfie_image: selfieImageBase64
+              }),
+            });
+
+            if (response.ok) {
+              console.log('Images submitted successfully!');
+              // Optionally, redirect or show a success message
+            } else {
+              console.error('Failed to submit images:', response.statusText);
+              alert('Failed to submit images. Please try again.');
+            }
+          } catch (error) {
+            console.error('Error submitting images:', error);
+            alert('An error occurred while submitting images. Please try again.');
+          }
+        });
+
+        // Handle Discord Login Button (Placeholder for now)
+        document.querySelector('.login-button').addEventListener('click', () => {
+          window.location.href = '/login';
+        });
+
+        // Dashboard functionality
+        async function loadDashboard() {
+          try {
+            const response = await fetch('/dashboard');
+            if (response.redirected) {
+              window.location.href = response.url; // Redirect to login if not authenticated
+              return;
+            }
+            const data = await response.json();
+            const managedGuildsList = document.getElementById('managed-guilds-list');
+            managedGuildsList.innerHTML = ''; // Clear previous list
+
+            if (data.managed_guilds && data.managed_guilds.length > 0) {
+              data.managed_guilds.forEach(guild => {
+                const guildCard = document.createElement('div');
+                guildCard.classList.add('guild-card');
+                guildCard.innerHTML = `
+                  <img src="${guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` : 'https://via.placeholder.com/50'}" alt="${guild.name} icon">
+                  <h3>${guild.name}</h3>
+                  <p>${guild.id}</p>
+                `;
+                guildCard.addEventListener('click', () => {
+                  showSection('guild-settings'); // Assuming a new section for guild settings
+                  history.pushState(null, '', `#guild-settings-${guild.id}`);
+                  loadGuildSettings(guild.id); // Load settings for the selected guild
+                });
+                managedGuildsList.appendChild(guildCard);
+              });
+            } else {
+              managedGuildsList.innerHTML = '<p>No managed guilds found or you do not have permission to manage any guilds.</p>';
+            }
+          } catch (error) {
+            console.error('Error loading dashboard:', error);
+            // Optionally, redirect to login or show an error message
+          }
+        }
+
+        // Call loadDashboard when the dashboard section is shown
+        document.getElementById('dashboard').addEventListener('transitionend', () => {
+          if (!document.getElementById('dashboard').classList.contains('hidden')) {
+            loadDashboard();
+          }
+        });
+
+        // Placeholder for loading guild settings (will be implemented later)
+        async function loadGuildSettings(guildId) {
+          console.log(`Loading settings for guild: ${guildId}`);
+          const guildNameSpan = document.getElementById('guild-name');
+          const settingsGuildIdInput = document.getElementById('settings-guild-id');
+          const logChannelSelect = document.getElementById('log-channel');
+          const infoChannelSelect = document.getElementById('info-channel');
+          const verifiedRoleSelect = document.getElementById('verified-role');
+          const minAgeVerifiedInput = document.getElementById('min-age-verified');
+          const ageRolesContainer = document.getElementById('age-roles-container');
+          const addAgeRoleButton = document.getElementById('add-age-role');
+          const guildSettingsForm = document.getElementById('guild-settings-form');
+
+          logChannelSelect.innerHTML = '';
+          infoChannelSelect.innerHTML = '';
+          verifiedRoleSelect.innerHTML = '';
+          ageRolesContainer.innerHTML = '<h2>Age Roles</h2>'; // Clear existing age roles
+          ageRolesContainer.appendChild(addAgeRoleButton); // Re-add the add button
+
+          try {
+            const response = await fetch(`/api/guild_settings/${guildId}`);
+            if (response.redirected) {
+              window.location.href = response.url;
+              return;
+            }
+            const data = await response.json();
+
+            guildNameSpan.textContent = data.guild_name || 'Unknown Guild';
+            settingsGuildIdInput.value = guildId;
+
+            // Populate channels
+            data.channels.forEach(channel => {
+              const option = document.createElement('option');
+              option.value = channel.id;
+              option.textContent = `#${channel.name}`;
+              logChannelSelect.appendChild(option.cloneNode(true));
+              infoChannelSelect.appendChild(option.cloneNode(true));
+            });
+
+            // Populate roles
+            data.roles.forEach(role => {
+              const option = document.createElement('option');
+              option.value = role.id;
+              option.textContent = role.name;
+              verifiedRoleSelect.appendChild(option.cloneNode(true));
+            });
+
+            // Set current settings
+            logChannelSelect.value = data.settings.log_channel_id || '';
+            infoChannelSelect.value = data.settings.info_channel_id || '';
+            verifiedRoleSelect.value = data.settings.verified_role_id || '';
+            minAgeVerifiedInput.value = data.settings.min_age_for_verified_role || 0;
+
+            // Populate age roles
+            if (data.settings.age_roles) {
+              data.settings.age_roles.forEach(ageRole => addAgeRoleField(ageRole.age, ageRole.role_id));
+            }
+
+          } catch (error) {
+            console.error('Error loading guild settings:', error);
+            alert('Failed to load guild settings.');
+          }
+        }
+
+        function addAgeRoleField(age = '', roleId = '') {
+          const ageRolesContainer = document.getElementById('age-roles-container');
+          const ageRoleEntry = document.createElement('div');
+          ageRoleEntry.classList.add('age-role-entry');
+          ageRoleEntry.innerHTML = `
+            <label>Age:</label>
+            <input type="number" class="age-input" value="${age}" min="0">
+            <label>Role:</label>
+            <select class="role-select"></select>
+            <button type="button" class="remove-age-role">Remove</button>
+          `;
+          ageRolesContainer.insertBefore(ageRoleEntry, document.getElementById('add-age-role'));
+
+          const roleSelect = ageRoleEntry.querySelector('.role-select');
+          // Populate roles for this specific age role entry
+          // This assumes `data.roles` is accessible or fetched again
+          // For simplicity, let's assume we can get roles from the main settings load
+          // In a real app, you might pass roles as an argument or fetch them here.
+          // For now, we'll use a placeholder or assume roles are globally available after loadGuildSettings
+          const allRoles = Array.from(document.getElementById('verified-role').options).map(opt => ({ id: opt.value, name: opt.textContent }));
+          allRoles.forEach(role => {
+            const option = document.createElement('option');
+            option.value = role.id;
+            option.textContent = role.name;
+            roleSelect.appendChild(option);
+          });
+          roleSelect.value = roleId;
+
+          ageRoleEntry.querySelector('.remove-age-role').addEventListener('click', () => {
+            ageRoleEntry.remove();
+          });
+        }
+
+        document.getElementById('add-age-role').addEventListener('click', () => addAgeRoleField());
+
+        document.getElementById('guild-settings-form').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const guildId = document.getElementById('settings-guild-id').value;
+          const logChannelId = document.getElementById('log-channel').value;
+          const infoChannelId = document.getElementById('info-channel').value;
+          const verifiedRoleId = document.getElementById('verified-role').value;
+          const minAgeForVerifiedRole = parseInt(document.getElementById('min-age-verified').value);
+
+          const ageRoles = [];
+          document.querySelectorAll('.age-role-entry').forEach(entry => {
+            const age = parseInt(entry.querySelector('.age-input').value);
+            const role_id = entry.querySelector('.role-select').value;
+            if (!isNaN(age) && role_id) {
+              ageRoles.push({ age, role_id });
+            }
+          });
+
+          const settings = {
+            log_channel_id: logChannelId,
+            info_channel_id: infoChannelId,
+            age_roles: ageRoles,
+            verified_role_id: verifiedRoleId,
+            min_age_for_verified_role: minAgeForVerifiedRole
+          };
+
+          try {
+            const response = await fetch(`/api/guild_settings/${guildId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(settings)
+            });
+
+            if (response.redirected) {
+              window.location.href = response.url;
+              return;
+            }
+
+            if (response.ok) {
+              alert('Settings saved successfully!');
+            } else {
+              const errorData = await response.json();
+              alert(`Failed to save settings: ${errorData.error || response.statusText}`);
+            }
+          } catch (error) {
+            console.error('Error saving guild settings:', error);
+            alert('An error occurred while saving settings.');
+          }
+        });
+
+      });
+    </script>
+</body>
+</html>

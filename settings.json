@@ -1,0 +1,11 @@
+{
+    "guild_settings": {
+        "default": {
+            "log_channel_id": null,
+            "info_channel_id": null,
+            "age_roles": {},
+            "verified_role_id": null,
+            "min_age_for_verified_role": null
+        }
+    }
+}
